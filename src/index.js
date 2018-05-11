@@ -140,18 +140,24 @@ export class ReactNativeModal extends Component {
   componentDidMount() {
     if (this.state.isVisible) {
       this.open();
+    } 
+    if (DeviceEventEmitter) { 
+      // Need if statement because DeviceEventEmitter is not supported
+      // by react-native-web
+      DeviceEventEmitter.addListener(
+        "didUpdateDimensions",
+        this.handleDimensionsUpdate
+      );
     }
-    DeviceEventEmitter.addListener(
-      "didUpdateDimensions",
-      this.handleDimensionsUpdate
-    );
   }
 
   componentWillUnmount() {
-    DeviceEventEmitter.removeListener(
-      "didUpdateDimensions",
-      this.handleDimensionsUpdate
-    );
+    if (DeviceEventEmitter) { 
+      DeviceEventEmitter.removeListener(
+        "didUpdateDimensions",
+        this.handleDimensionsUpdate
+      );
+    } 
   }
 
   componentDidUpdate(prevProps, prevState) {
